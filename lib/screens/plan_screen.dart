@@ -13,26 +13,28 @@ class _PlanScreenState extends State<PlanScreen> {
   DateTime? endDate;
 
   List<String> guests = [];
-  int foodPreparedCount = 0;
+  int foodPreparedCount = 2;
   int totalFoodItems = 5; // Example count
 
   void _pickDateTime(
       BuildContext context, Function(DateTime) onDateSelected) async {
-    DateTime? pickedDate = await showDatePicker(
+    final timePickerFuture = showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    final datePickerFuture = showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-    if (pickedDate != null) {
-      TimeOfDay? time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-      if (time != null) {
-        onDateSelected(DateTime(pickedDate.year, pickedDate.month,
-            pickedDate.day, time.hour, time.minute));
-      }
+
+    final pickedDate = await datePickerFuture;
+    final time = await timePickerFuture;
+
+    if (pickedDate != null && time != null) {
+      onDateSelected(DateTime(pickedDate.year, pickedDate.month, pickedDate.day,
+          time.hour, time.minute));
     }
   }
 
@@ -73,7 +75,7 @@ class _PlanScreenState extends State<PlanScreen> {
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-        
+
             // Start and End Datetime
             Card(
               shape: RoundedRectangleBorder(
@@ -85,7 +87,7 @@ class _PlanScreenState extends State<PlanScreen> {
                   ListTile(
                     leading: const Icon(
                       Icons.calendar_today,
-                      color: Colors.blue,
+                      color: Colors.orange,
                     ),
                     title: Text(
                       startDate == null
@@ -97,9 +99,10 @@ class _PlanScreenState extends State<PlanScreen> {
                       (date) => setState(() => startDate = date),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   ListTile(
-                    leading: const Icon(Icons.calendar_today, color: Colors.blue),
+                    leading:
+                        const Icon(Icons.calendar_today, color: Colors.orange),
                     title: Text(
                       endDate == null
                           ? 'End Date'
@@ -114,7 +117,7 @@ class _PlanScreenState extends State<PlanScreen> {
               ),
             ),
             const SizedBox(height: 20),
-        
+
             // Map Selector
             Card(
               shape: RoundedRectangleBorder(
@@ -122,7 +125,7 @@ class _PlanScreenState extends State<PlanScreen> {
               ),
               elevation: 2,
               child: ListTile(
-                leading: const Icon(Icons.map, color: Colors.green),
+                leading: const Icon(Icons.map, color: Colors.orange),
                 title: const Text('Choose Location'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
@@ -131,7 +134,7 @@ class _PlanScreenState extends State<PlanScreen> {
               ),
             ),
             const SizedBox(height: 20),
-        
+
             // Guests Section
             Card(
               shape: RoundedRectangleBorder(
@@ -153,13 +156,13 @@ class _PlanScreenState extends State<PlanScreen> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.add_circle_outline,
-                              size: 32, color: Colors.blue),
+                              size: 32, color: Colors.orange),
                           onPressed: _addGuest,
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-        
+
                     // Guests List
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -171,7 +174,7 @@ class _PlanScreenState extends State<PlanScreen> {
                                     children: [
                                       CircleAvatar(
                                         radius: 28,
-                                        backgroundColor: Colors.blue.shade100,
+                                        backgroundColor: Colors.orange.shade100,
                                         child: Text(
                                           guest[0],
                                           style: const TextStyle(fontSize: 18),
@@ -193,8 +196,8 @@ class _PlanScreenState extends State<PlanScreen> {
               ),
             ),
             const SizedBox(height: 20),
-        
-            // Food Checklist
+
+            // Food
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -202,20 +205,20 @@ class _PlanScreenState extends State<PlanScreen> {
               elevation: 2,
               child: ListTile(
                 leading: const Icon(Icons.fastfood, color: Colors.orange),
-                title: const Text('Food Checklist'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                title: const Text('Food'),
+                subtitle: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    Text(
-                      '${(progress * 100).toStringAsFixed(0)}% Prepared',
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 6),
                     LinearProgressIndicator(
                       value: progress,
-                      minHeight: 10,
+                      minHeight: 20,
+                      borderRadius: BorderRadius.circular(12),
                       backgroundColor: Colors.orange.shade100,
                       color: Colors.orange,
+                    ),
+                    Text(
+                      '$foodPreparedCount / $totalFoodItems',
+                      style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -224,34 +227,52 @@ class _PlanScreenState extends State<PlanScreen> {
               ),
             ),
             const SizedBox(height: 20),
-        
-            // Food Checklist
+
+            // Tool
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 2,
               child: ListTile(
-                leading: const Icon(Icons.fastfood, color: Colors.orange),
-                title: const Text('Food Checklist'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                leading:
+                    const Icon(Icons.shopping_basket, color: Colors.orange),
+                title: const Text('Tool'),
+                subtitle: Stack(
+                  alignment: Alignment.center,
                   children: [
+                    LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 20,
+                      borderRadius: BorderRadius.circular(12),
+                      backgroundColor: Colors.orange.shade100,
+                      color: Colors.orange,
+                    ),
                     Text(
                       '${(progress * 100).toStringAsFixed(0)}% Prepared',
                       style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(height: 6),
-                    LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 10,
-                      backgroundColor: Colors.orange.shade100,
-                      color: Colors.orange,
                     ),
                   ],
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: _navigateToFoodChecklist,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Activity
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 2,
+              child: ListTile(
+                leading: const Icon(Icons.eco_outlined, color: Colors.orange),
+                title: const Text('Activity'),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  // Add activity logic here.
+                },
               ),
             ),
           ],
