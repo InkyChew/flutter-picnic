@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:picnic/food/views/food_checklist_page.dart';
+import 'package:picnic/screens/guest_screen.dart';
 
 class PlanScreen extends StatefulWidget {
   const PlanScreen({super.key});
@@ -37,10 +38,12 @@ class _PlanScreenState extends State<PlanScreen> {
     }
   }
 
-  void _addGuest() {
-    setState(() {
-      guests.add('Guest ${guests.length + 1}');
-    });
+  void _navigateToGuestScreen() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const GuestScreen(),
+        ));
   }
 
   void _navigateToFoodChecklist() {
@@ -134,64 +137,48 @@ class _PlanScreenState extends State<PlanScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Guests Section
+            // Guests
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
               elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title and Add Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Guests',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add_circle_outline,
-                              size: 32, color: Colors.orange),
-                          onPressed: _addGuest,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Guests List
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: guests
-                            .map((guest) => Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Column(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 28,
-                                        backgroundColor: Colors.orange.shade100,
-                                        child: Text(
-                                          guest[0],
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        guest,
-                                        style: const TextStyle(fontSize: 12),
-                                      ),
-                                    ],
+              child: ListTile(
+                title: const Row(children: [
+                  Icon(Icons.face, color: Colors.orange),
+                  SizedBox(width: 10),
+                  Text('Guests (10)'),
+                ]),
+                subtitle: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: guests
+                        .map((guest) => Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, right: 8.0),
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 28,
+                                    backgroundColor: Colors.orange.shade100,
+                                    child: Text(
+                                      guest[0],
+                                      style: const TextStyle(fontSize: 18),
+                                    ),
                                   ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    guest,
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  ),
                 ),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: _navigateToGuestScreen,
               ),
             ),
             const SizedBox(height: 20),
