@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:picnic/food/views/food_checklist_page.dart';
 
 class PlanScreen extends StatefulWidget {
   const PlanScreen({super.key});
@@ -18,23 +19,21 @@ class _PlanScreenState extends State<PlanScreen> {
 
   void _pickDateTime(
       BuildContext context, Function(DateTime) onDateSelected) async {
-    final timePickerFuture = showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    final datePickerFuture = showDatePicker(
+    final pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-
-    final pickedDate = await datePickerFuture;
-    final time = await timePickerFuture;
-
-    if (pickedDate != null && time != null) {
-      onDateSelected(DateTime(pickedDate.year, pickedDate.month, pickedDate.day,
-          time.hour, time.minute));
+    if (pickedDate != null && context.mounted) {
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (time != null) {
+        onDateSelected(DateTime(pickedDate.year, pickedDate.month,
+            pickedDate.day, time.hour, time.minute));
+      }
     }
   }
 
@@ -45,17 +44,17 @@ class _PlanScreenState extends State<PlanScreen> {
   }
 
   void _navigateToFoodChecklist() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //       builder: (context) => FoodChecklistPage(
-    //             onFoodProgressChanged: (preparedCount) {
-    //               setState(() {
-    //                 foodPreparedCount = preparedCount;
-    //               });
-    //             },
-    //           )),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => FoodChecklistPage(
+              //   onFoodProgressChanged: (preparedCount) {
+              //     setState(() {
+              //       foodPreparedCount = preparedCount;
+              //     });
+              //   },
+              )),
+    );
   }
 
   @override
@@ -118,7 +117,7 @@ class _PlanScreenState extends State<PlanScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Map Selector
+            // Place
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -126,7 +125,7 @@ class _PlanScreenState extends State<PlanScreen> {
               elevation: 2,
               child: ListTile(
                 leading: const Icon(Icons.map, color: Colors.orange),
-                title: const Text('Choose Location'),
+                title: const Text('Place'),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
                   // Add map selection logic here.
@@ -211,14 +210,14 @@ class _PlanScreenState extends State<PlanScreen> {
                   children: [
                     LinearProgressIndicator(
                       value: progress,
-                      minHeight: 20,
+                      minHeight: 16,
                       borderRadius: BorderRadius.circular(12),
                       backgroundColor: Colors.orange.shade100,
                       color: Colors.orange,
                     ),
                     Text(
                       '$foodPreparedCount / $totalFoodItems',
-                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      // style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
@@ -243,14 +242,14 @@ class _PlanScreenState extends State<PlanScreen> {
                   children: [
                     LinearProgressIndicator(
                       value: progress,
-                      minHeight: 20,
+                      minHeight: 16,
                       borderRadius: BorderRadius.circular(12),
                       backgroundColor: Colors.orange.shade100,
                       color: Colors.orange,
                     ),
                     Text(
                       '${(progress * 100).toStringAsFixed(0)}% Prepared',
-                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      // style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
