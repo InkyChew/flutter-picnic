@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:picnic/food/views/food_checklist_page.dart';
-import 'package:picnic/screens/guest_screen.dart';
+import 'package:picnic/pages/guest_page.dart';
 
-class PlanScreen extends StatefulWidget {
-  const PlanScreen({super.key});
+class PlanPage extends StatefulWidget {
+  const PlanPage({super.key});
 
   @override
-  State<PlanScreen> createState() => _PlanScreenState();
+  State<PlanPage> createState() => _PlanPageState();
 }
 
-class _PlanScreenState extends State<PlanScreen> {
+class _PlanPageState extends State<PlanPage> {
   DateTime? startDate;
   DateTime? endDate;
 
@@ -42,7 +42,7 @@ class _PlanScreenState extends State<PlanScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const GuestScreen(),
+          builder: (context) => const GuestPage(),
         ));
   }
 
@@ -72,11 +72,17 @@ class _PlanScreenState extends State<PlanScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title
-            const Text(
-              'Plan Your Picnic',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            TextFormField(
+              initialValue: 'Time With Wild',
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                focusedBorder: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              onChanged: (value) {},
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             // Start and End Datetime
             Card(

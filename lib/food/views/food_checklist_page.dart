@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:picnic/food/models/food.dart';
 import 'package:picnic/food/views/food_edit_page.dart';
+import 'package:picnic/guest/models/guest.dart';
 
 class FoodChecklistPage extends StatelessWidget {
-  final String userName = 'Alice';
+  final User user = User(id: '', name: 'Alice', email: '');
   final List<FoodItem> foodItems = [
     FoodItem(
         name: 'Sandwich',
-        preparedBy: 'Alice',
+        preparedBy: User(id: '', name: 'Alice', email: ''),
         quantity: 10,
         isPrepared: true,
         description: "bob donot eat meat oh no say cheese good taste"),
-    FoodItem(name: 'Juice', preparedBy: 'Bob', quantity: 5, isPrepared: false),
-    FoodItem(name: 'Chips', preparedBy: 'Alice', quantity: 3, isPrepared: true),
+    FoodItem(
+        name: 'Juice',
+        preparedBy: User(id: '', name: 'Alice', email: ''),
+        quantity: 5,
+        isPrepared: false),
+    FoodItem(
+        name: 'Chips',
+        preparedBy: User(id: '', name: 'Alice', email: ''),
+        quantity: 3,
+        isPrepared: true),
   ];
 
   FoodChecklistPage({super.key});
@@ -21,7 +30,7 @@ class FoodChecklistPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FoodEditPage(userName: userName, foodItem: item),
+        builder: (context) => FoodEditPage(user: user, foodItem: item),
       ),
     );
   }
@@ -29,6 +38,13 @@ class FoodChecklistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Colors.grey[800],
+        ),
+      ),
       body: ListView.builder(
         itemCount: foodItems.length,
         itemBuilder: (context, index) {
@@ -58,7 +74,7 @@ class FoodChecklistPage extends StatelessWidget {
                 radius: 28,
                 backgroundColor: Colors.orange.shade100,
                 child: Text(
-                  item.preparedBy,
+                  item.preparedBy.name,
                   style: const TextStyle(fontSize: 18),
                 ),
               ),

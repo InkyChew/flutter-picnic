@@ -1,6 +1,8 @@
+import 'package:picnic/guest/models/guest.dart';
+
 class FoodItem {
   String name;
-  String preparedBy;
+  User preparedBy;
   int quantity;
   String description;
   bool isPrepared;
