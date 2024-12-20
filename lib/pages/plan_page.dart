@@ -60,6 +60,13 @@ class _PlanPageState extends State<PlanPage> {
     );
   }
 
+  void _navigateToToolChecklist() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => FoodChecklistPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double progress =
@@ -72,17 +79,26 @@ class _PlanPageState extends State<PlanPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title
-            TextFormField(
-              initialValue: 'Time With Wild',
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              onChanged: (value) {},
+              elevation: 2,
+              child: ListTile(
+                leading: const Icon(Icons.flag, color: Colors.orange),
+                title: TextFormField(
+                  initialValue: 'Time With Wild',
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
+                  onChanged: (value) {},
+                ),
+              ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             // Start and End Datetime
             Card(
@@ -241,13 +257,13 @@ class _PlanPageState extends State<PlanPage> {
                       color: Colors.orange,
                     ),
                     Text(
-                      '${(progress * 100).toStringAsFixed(0)}% Prepared',
+                      '$foodPreparedCount / $totalFoodItems',
                       // style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: _navigateToFoodChecklist,
+                onTap: _navigateToToolChecklist,
               ),
             ),
             const SizedBox(height: 20),
