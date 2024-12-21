@@ -107,22 +107,24 @@ class _PersonalFoodChecklistPageState extends State<FoodEditPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Prepared by
-                  DropdownMenu<User>(
-                    initialSelection: food.preparedBy,
-                    onSelected: (User? value) {
-                      // This is called when the user selects an item.
-                      setState(() {
-                        food.preparedBy = value!;
-                      });
-                    },
-                    dropdownMenuEntries: generateGuestEntry(guests),
-                  ),
-                  const SizedBox(height: 20),
-
                   // Prepared
                   Row(
                     children: [
+                      Expanded(
+                        child: DropdownMenu<User>(
+                          expandedInsets: const EdgeInsets.all(1.0),
+                          hintText: 'Prepared by',
+                          initialSelection: food.preparedBy,
+                          onSelected: (User? value) {
+                            // This is called when the user selects an item.
+                            setState(() {
+                              food.preparedBy = value!;
+                            });
+                          },
+                          dropdownMenuEntries: generateGuestEntry(guests),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Checkbox(
                         value: food.isPrepared,
                         onChanged: (value) {

@@ -9,10 +9,10 @@ class ToolEditPage extends StatefulWidget {
   const ToolEditPage({super.key, required this.user, required this.toolItem});
 
   @override
-  State<ToolEditPage> createState() => _PersonalFoodChecklistPageState();
+  State<ToolEditPage> createState() => _PersonaltoolChecklistPageState();
 }
 
-class _PersonalFoodChecklistPageState extends State<ToolEditPage> {
+class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
   late ToolItem tool;
   List<User> guests = [
     User(id: '', name: 'Alice', email: ''),
@@ -35,7 +35,7 @@ class _PersonalFoodChecklistPageState extends State<ToolEditPage> {
     tool = widget.toolItem ?? ToolItem(preparedBy: widget.user);
   }
 
-  void _updateFoodItem(int quantity, bool isPrepared) {
+  void _updatetoolItem(int quantity, bool isPrepared) {
     setState(() {
       tool.quantity = quantity;
       tool.isPrepared = isPrepared;
@@ -86,7 +86,7 @@ class _PersonalFoodChecklistPageState extends State<ToolEditPage> {
                     ),
                     onChanged: (value) {
                       final newQuantity = int.tryParse(value) ?? 0;
-                      _updateFoodItem(newQuantity, tool.isPrepared);
+                      _updatetoolItem(newQuantity, tool.isPrepared);
                     },
                   ),
                   const SizedBox(height: 20),
@@ -107,26 +107,28 @@ class _PersonalFoodChecklistPageState extends State<ToolEditPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Prepared by
-                  DropdownMenu<User>(
-                    initialSelection: tool.preparedBy,
-                    onSelected: (User? value) {
-                      // This is called when the user selects an item.
-                      setState(() {
-                        tool.preparedBy = value!;
-                      });
-                    },
-                    dropdownMenuEntries: generateGuestEntry(guests),
-                  ),
-                  const SizedBox(height: 20),
-
                   // Prepared
                   Row(
                     children: [
+                      Expanded(
+                        child: DropdownMenu<User>(
+                          expandedInsets: const EdgeInsets.all(1.0),
+                          hintText: 'Prepared by',
+                          initialSelection: tool.preparedBy,
+                          onSelected: (User? value) {
+                            // This is called when the user selects an item.
+                            setState(() {
+                              tool.preparedBy = value!;
+                            });
+                          },
+                          dropdownMenuEntries: generateGuestEntry(guests),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Checkbox(
                         value: tool.isPrepared,
                         onChanged: (value) {
-                          _updateFoodItem(tool.quantity, value ?? false);
+                          _updatetoolItem(tool.quantity, value ?? false);
                         },
                       ),
                       const Text('Prepared'),

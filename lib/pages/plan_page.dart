@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:picnic/food/views/food_checklist_page.dart';
 import 'package:picnic/pages/guest_page.dart';
+import 'package:picnic/tool/views/tool_checklist_page.dart';
 
 class PlanPage extends StatefulWidget {
   const PlanPage({super.key});
@@ -63,7 +64,7 @@ class _PlanPageState extends State<PlanPage> {
   void _navigateToToolChecklist() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => FoodChecklistPage()),
+      MaterialPageRoute(builder: (context) => ToolChecklistPage()),
     );
   }
 
