@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:picnic/food/views/food_checklist_page.dart';
 import 'package:picnic/pages/guest_page.dart';
+import 'package:picnic/place/views/place_search.dart';
 import 'package:picnic/tool/views/tool_checklist_page.dart';
 
 class PlanPage extends StatefulWidget {
@@ -37,6 +38,14 @@ class _PlanPageState extends State<PlanPage> {
             pickedDate.day, time.hour, time.minute));
       }
     }
+  }
+
+  void _navigateToSearchPlace() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PlaceSearch(),
+        ));
   }
 
   void _navigateToGuestScreen() {
@@ -77,7 +86,10 @@ class _PlanPageState extends State<PlanPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text("Let's plan a picnic!", style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),),
+        title: const Text(
+          "Let's plan a picnic!",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -96,6 +108,7 @@ class _PlanPageState extends State<PlanPage> {
                   title: TextFormField(
                     initialValue: 'Time With Wild',
                     decoration: const InputDecoration(
+                      hintText: 'Title',
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 8),
                     ),
@@ -103,7 +116,7 @@ class _PlanPageState extends State<PlanPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // Start and End Datetime
               Card(
@@ -145,7 +158,7 @@ class _PlanPageState extends State<PlanPage> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // Place
               Card(
@@ -157,12 +170,10 @@ class _PlanPageState extends State<PlanPage> {
                   leading: const Icon(Icons.map, color: Colors.orange),
                   title: const Text('Place'),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
-                    // Add map selection logic here.
-                  },
+                  onTap: _navigateToSearchPlace,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // Guests
               Card(
@@ -208,7 +219,7 @@ class _PlanPageState extends State<PlanPage> {
                   onTap: _navigateToGuestScreen,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // Food
               Card(
@@ -239,7 +250,7 @@ class _PlanPageState extends State<PlanPage> {
                   onTap: _navigateToFoodChecklist,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // Tool
               Card(
@@ -271,7 +282,7 @@ class _PlanPageState extends State<PlanPage> {
                   onTap: _navigateToToolChecklist,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
               // Activity
               Card(
