@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:picnic/place/models/google_place.dart';
 // import 'package:picnic/place/services/place_service.dart';
@@ -20,7 +19,6 @@ class _PlaceSearchState extends State<PlaceSearch> {
       if (_debounce?.isActive ?? false) _debounce?.cancel();
 
       _debounce = Timer(const Duration(milliseconds: 1000), () async {
-        print(query);
         // final places = await searchPlaces(query);
         final places = [
           Place(
