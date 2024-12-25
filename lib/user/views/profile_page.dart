@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ElevatedButton(
                 onPressed: () {
                   // Handle add to friends logic here
-                  print('friends');
+                  // print('friends');
                 },
                 child: const Text('Friends'),
               ),
