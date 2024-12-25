@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:picnic/food/views/food_checklist_page.dart';
-import 'package:picnic/guest/views/guest_page.dart';
+import 'package:picnic/plan/bloc/plan_bloc.dart';
+import 'package:picnic/plan/models/models.dart';
+import 'package:picnic/plan/views/food_checklist_page.dart';
+import 'package:picnic/plan/views/guest_page.dart';
 import 'package:picnic/place/views/place_search.dart';
-import 'package:picnic/tool/views/tool_checklist_page.dart';
+import 'package:picnic/plan/views/tool_checklist_page.dart';
 
 class PlanPage extends StatefulWidget {
   const PlanPage({super.key});
@@ -13,12 +16,6 @@ class PlanPage extends StatefulWidget {
 }
 
 class _PlanPageState extends State<PlanPage> {
-  DateTime? startDate;
-  DateTime? endDate;
-
-  List<String> guests = [];
-  int foodPreparedCount = 2;
-  int totalFoodItems = 5; // Example count
 
   void _pickDateTime(
       BuildContext context, Function(DateTime) onDateSelected) async {
@@ -48,55 +45,56 @@ class _PlanPageState extends State<PlanPage> {
         ));
   }
 
-  void _navigateToGuestScreen() {
+  void _navigateToGuestScreen(Plan plan) {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const GuestPage(),
+          builder: (context) => GuestPage(members: plan.members),
         ));
   }
 
-  void _navigateToFoodChecklist() {
+  void _navigateToFoodChecklist(Plan plan) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => FoodChecklistPage(
-              //   onFoodProgressChanged: (preparedCount) {
-              //     setState(() {
-              //       foodPreparedCount = preparedCount;
-              //     });
-              //   },
-              )),
+          builder: (context) => FoodChecklistPage(foods: plan.foods)),
     );
   }
 
-  void _navigateToToolChecklist() {
+  void _navigateToToolChecklist(Plan plan) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ToolChecklistPage()),
+      MaterialPageRoute(
+          builder: (context) => ToolChecklistPage(tools: plan.tools)),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    double progress =
-        totalFoodItems == 0 ? 0 : foodPreparedCount / totalFoodItems;
+  void initState() {
+    super.initState();
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          "Let's plan a picnic!",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PlanBloc, PlanState>(
+      builder: (context, state) {
+        if (state is PlanInitial) {
+          return const Text('Initial');
+        }
+        if (state is PlanLoading) {
+          return const Text('LOADING');
+        }
+        if (state is PlanLoaded) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text(
+                "Let's plan a picnic!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            body: ListView(padding: const EdgeInsets.all(16.0), children: [
               // Title
               Card(
                 shape: RoundedRectangleBorder(
@@ -106,7 +104,7 @@ class _PlanPageState extends State<PlanPage> {
                 child: ListTile(
                   leading: const Icon(Icons.flag, color: Colors.orange),
                   title: TextFormField(
-                    initialValue: 'Time With Wild',
+                    initialValue: state.plan.title,
                     decoration: const InputDecoration(
                       hintText: 'Title',
                       border: InputBorder.none,
@@ -132,13 +130,12 @@ class _PlanPageState extends State<PlanPage> {
                         color: Colors.orange,
                       ),
                       title: Text(
-                        startDate == null
-                            ? 'Start Date'
-                            : DateFormat('yyyy-MM-dd HH:mm').format(startDate!),
+                        DateFormat('yyyy-MM-dd HH:mm').format(state.plan.startDate),
                       ),
                       onTap: () => _pickDateTime(
                         context,
-                        (date) => setState(() => startDate = date),
+                        (date) =>
+                            setState(() => state.plan.copyWith(startDate: date)),
                       ),
                     ),
                     const Divider(),
@@ -146,13 +143,11 @@ class _PlanPageState extends State<PlanPage> {
                       leading: const Icon(Icons.calendar_today,
                           color: Colors.orange),
                       title: Text(
-                        endDate == null
-                            ? 'End Date'
-                            : DateFormat('yyyy-MM-dd HH:mm').format(endDate!),
+                        DateFormat('yyyy-MM-dd HH:mm').format(state.plan.endDate),
                       ),
                       onTap: () => _pickDateTime(
                         context,
-                        (date) => setState(() => endDate = date),
+                        (date) => setState(() => state.plan.copyWith(endDate: date)),
                       ),
                     ),
                   ],
@@ -190,8 +185,8 @@ class _PlanPageState extends State<PlanPage> {
                   subtitle: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: guests
-                          .map((guest) => Padding(
+                      children: state.plan.members
+                          .map((member) => Padding(
                                 padding: const EdgeInsets.only(
                                     top: 10.0, right: 8.0),
                                 child: Column(
@@ -200,13 +195,13 @@ class _PlanPageState extends State<PlanPage> {
                                       radius: 28,
                                       backgroundColor: Colors.orange.shade100,
                                       child: Text(
-                                        guest[0],
+                                        member.user.name,
                                         style: const TextStyle(fontSize: 18),
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      guest,
+                                      member.user.name,
                                       style: const TextStyle(fontSize: 12),
                                     ),
                                   ],
@@ -216,7 +211,7 @@ class _PlanPageState extends State<PlanPage> {
                     ),
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: _navigateToGuestScreen,
+                  onTap: () => _navigateToGuestScreen(state.plan),
                 ),
               ),
               const SizedBox(height: 16),
@@ -234,20 +229,20 @@ class _PlanPageState extends State<PlanPage> {
                     alignment: Alignment.center,
                     children: [
                       LinearProgressIndicator(
-                        value: progress,
+                        value: state.plan.foodPreparedProgress,
                         minHeight: 16,
                         borderRadius: BorderRadius.circular(12),
                         backgroundColor: Colors.orange.shade100,
                         color: Colors.orange,
                       ),
                       Text(
-                        '$foodPreparedCount / $totalFoodItems',
+                        '${state.plan.foodPreparedCount} / ${state.plan.foodTotalCount}',
                         // style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: _navigateToFoodChecklist,
+                  onTap: () => _navigateToFoodChecklist(state.plan),
                 ),
               ),
               const SizedBox(height: 16),
@@ -266,20 +261,20 @@ class _PlanPageState extends State<PlanPage> {
                     alignment: Alignment.center,
                     children: [
                       LinearProgressIndicator(
-                        value: progress,
+                        value: state.plan.toolPreparedProgresst,
                         minHeight: 16,
                         borderRadius: BorderRadius.circular(12),
                         backgroundColor: Colors.orange.shade100,
                         color: Colors.orange,
                       ),
                       Text(
-                        '$foodPreparedCount / $totalFoodItems',
+                        '${state.plan.toolPreparedCount} / ${state.plan.toolTotalCount}',
                         // style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: _navigateToToolChecklist,
+                  onTap: () => _navigateToToolChecklist(state.plan),
                 ),
               ),
               const SizedBox(height: 16),
@@ -299,10 +294,11 @@ class _PlanPageState extends State<PlanPage> {
                   },
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ]),
+          );
+        }
+        return const Placeholder();
+      },
     );
   }
 }

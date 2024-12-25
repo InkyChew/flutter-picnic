@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:picnic/pages/plan_page.dart';
-import 'package:picnic/user/views/profile_page.dart';
+import 'package:picnic/plan/plan_app.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +33,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const ProfilePage();
+    return const PlanApp();
   }
 }

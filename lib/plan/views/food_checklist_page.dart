@@ -1,32 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:picnic/food/models/food.dart';
-import 'package:picnic/food/views/food_edit_page.dart';
+
+import 'package:picnic/plan/models/food.dart';
+import 'package:picnic/plan/views/food_edit_page.dart';
 import 'package:picnic/user/models/user.dart';
 
 class FoodChecklistPage extends StatelessWidget {
-  final User user = User(id: '', name: 'Alice', email: '');
-  final List<FoodItem> foodItems = [
-    FoodItem(
-        name: 'Sandwich',
-        preparedBy: User(id: '', name: 'Alice', email: ''),
-        quantity: 10,
-        isPrepared: true,
-        description: "bob donot eat meat oh no say cheese good taste"),
-    FoodItem(
-        name: 'Juice',
-        preparedBy: User(id: '', name: 'Alice', email: ''),
-        quantity: 5,
-        isPrepared: false),
-    FoodItem(
-        name: 'Chips',
-        preparedBy: User(id: '', name: 'Alice', email: ''),
-        quantity: 3,
-        isPrepared: true),
-  ];
+  final User user = User(name: 'Alice', email: '');
+  final List<Food> foods;
 
-  FoodChecklistPage({super.key});
+  FoodChecklistPage({
+    super.key,
+    required this.foods,
+  });
 
-  void _navigateToFoodEditPage(BuildContext context, FoodItem? item) {
+  void _navigateToFoodEditPage(BuildContext context, Food? item) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -46,9 +33,9 @@ class FoodChecklistPage extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: foodItems.length,
+        itemCount: foods.length,
         itemBuilder: (context, index) {
-          final item = foodItems[index];
+          final item = foods[index];
           return Card(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

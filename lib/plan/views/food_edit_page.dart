@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:picnic/tool/models/tool.dart';
+import 'package:picnic/plan/models/food.dart';
 import 'package:picnic/user/models/user.dart';
 
-class ToolEditPage extends StatefulWidget {
+class FoodEditPage extends StatefulWidget {
   final User user;
-  final ToolItem? toolItem;
+  final Food? foodItem;
 
-  const ToolEditPage({super.key, required this.user, required this.toolItem});
+  const FoodEditPage({super.key, required this.user, required this.foodItem});
 
   @override
-  State<ToolEditPage> createState() => _PersonaltoolChecklistPageState();
+  State<FoodEditPage> createState() => _PersonalFoodChecklistPageState();
 }
 
-class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
-  late ToolItem tool;
-  List<User> guests = [
-    User(id: '', name: 'Alice', email: ''),
-    User(id: '', name: 'Bob', email: ''),
-    User(id: '', name: 'Inky', email: '')
+class _PersonalFoodChecklistPageState extends State<FoodEditPage> {
+  late Food food;
+  List<User> members = [
+    User(name: 'Alice', email: ''),
+    User(name: 'Bob', email: ''),
+    User(name: 'Inky', email: '')
   ];
 
-  static List<DropdownMenuEntry<User>> generateGuestEntry(List<User> guests) {
-    return guests.map<DropdownMenuEntry<User>>((User guest) {
+  static List<DropdownMenuEntry<User>> generateGuestEntry(List<User> members) {
+    return members.map<DropdownMenuEntry<User>>((User guest) {
       return DropdownMenuEntry<User>(
         value: guest,
         label: guest.name,
@@ -32,13 +32,13 @@ class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
   @override
   void initState() {
     super.initState();
-    tool = widget.toolItem ?? ToolItem(preparedBy: widget.user);
+    food = widget.foodItem ?? Food(preparedBy: widget.user);
   }
 
-  void _updatetoolItem(int quantity, bool isPrepared) {
+  void _updateFoodItem(int quantity, bool isPrepared) {
     setState(() {
-      tool.quantity = quantity;
-      tool.isPrepared = isPrepared;
+      food.quantity = quantity;
+      food.isPrepared = isPrepared;
     });
   }
 
@@ -65,9 +65,9 @@ class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
-                    initialValue: tool.name,
+                    initialValue: food.name,
                     decoration: const InputDecoration(
-                      labelText: 'Tool',
+                      labelText: 'Food',
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.symmetric(horizontal: 8),
                     ),
@@ -77,7 +77,7 @@ class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
 
                   // Quantity
                   TextFormField(
-                    initialValue: tool.quantity.toString(),
+                    initialValue: food.quantity.toString(),
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: 'Quantity',
@@ -86,14 +86,14 @@ class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
                     ),
                     onChanged: (value) {
                       final newQuantity = int.tryParse(value) ?? 0;
-                      _updatetoolItem(newQuantity, tool.isPrepared);
+                      _updateFoodItem(newQuantity, food.isPrepared);
                     },
                   ),
                   const SizedBox(height: 20),
 
                   // Description
                   TextFormField(
-                    initialValue: tool.description,
+                    initialValue: food.description,
                     keyboardType: TextInputType.multiline,
                     // minLines: 6,
                     maxLines: 6,
@@ -114,21 +114,21 @@ class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
                         child: DropdownMenu<User>(
                           expandedInsets: const EdgeInsets.all(1.0),
                           hintText: 'Prepared by',
-                          initialSelection: tool.preparedBy,
+                          initialSelection: food.preparedBy,
                           onSelected: (User? value) {
                             // This is called when the user selects an item.
                             setState(() {
-                              tool.preparedBy = value!;
+                              food.preparedBy = value!;
                             });
                           },
-                          dropdownMenuEntries: generateGuestEntry(guests),
+                          dropdownMenuEntries: generateGuestEntry(members),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Checkbox(
-                        value: tool.isPrepared,
+                        value: food.isPrepared,
                         onChanged: (value) {
-                          _updatetoolItem(tool.quantity, value ?? false);
+                          _updateFoodItem(food.quantity, value ?? false);
                         },
                       ),
                       const Text('Prepared'),

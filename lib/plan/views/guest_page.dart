@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import 'package:picnic/plan/models/models.dart';
+import 'package:picnic/user/models/user.dart';
+
 class GuestPage extends StatefulWidget {
-  const GuestPage({super.key});
+  final List<Member> members;
+  const GuestPage({
+    super.key,
+    required this.members,
+  });
 
   @override
   State<GuestPage> createState() => _GuestPageState();
 }
 
 class _GuestPageState extends State<GuestPage> {
-  List<String> guests = ['Alice', 'Bob'];
+  late List<Member> members;
 
-  void _addGuest() {
+  @override
+  void initState() {
+    members = widget.members;
+    super.initState();
+  }
+
+  void _addMember() {
     setState(() {
-      guests.add('Guest ${guests.length + 1}');
+      var member = Member(user: User(name: 'Guest ${members.length + 1}', email: ''));
+      members.add(member);
     });
   }
 
-  void _deleteGuest(String value) {
+  void _deleteMember(Member value) {
     setState(() {
-      guests.remove(value);
+      members.remove(value);
     });
   }
 
@@ -35,16 +49,16 @@ class _GuestPageState extends State<GuestPage> {
       ),
       body: ListView.builder(
           padding: const EdgeInsets.all(8),
-          itemCount: guests.length,
+          itemCount: members.length,
           itemBuilder: (BuildContext context, int index) {
-            final String guest = guests[index];
+            final Member member = members[index];
             return Column(
               children: [
                 Slidable(
                   endActionPane:
                       ActionPane(motion: const ScrollMotion(), children: [
                     SlidableAction(
-                      onPressed: (context) => _deleteGuest(guest),
+                      onPressed: (context) => _deleteMember(member),
                       foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.error,
                       icon: Icons.delete,
@@ -62,7 +76,7 @@ class _GuestPageState extends State<GuestPage> {
                         radius: 28,
                         backgroundColor: Colors.orange.shade100,
                       ),
-                      title: Text(guest),
+                      title: Text(member.user.name),
                       subtitle: const Text('Invited at 2024-12-10 10:30'),
                       // trailing: IconButton(
                       //   icon: const Icon(Icons.mail, color: Colors.orange),
@@ -77,7 +91,7 @@ class _GuestPageState extends State<GuestPage> {
             );
           }),
       floatingActionButton: FloatingActionButton(
-          onPressed: _addGuest, child: const Icon(Icons.add)),
+          onPressed: _addMember, child: const Icon(Icons.add)),
     );
   }
 }
