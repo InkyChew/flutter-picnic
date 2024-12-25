@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:picnic/food/views/food_checklist_page.dart';
-import 'package:picnic/pages/guest_page.dart';
+import 'package:picnic/guest/views/guest_page.dart';
 import 'package:picnic/place/views/place_search.dart';
 import 'package:picnic/tool/views/tool_checklist_page.dart';
 

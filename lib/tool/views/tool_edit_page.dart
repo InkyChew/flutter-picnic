@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:picnic/tool/models/tool.dart';
-import 'package:picnic/guest/models/guest.dart';
+import 'package:picnic/user/models/user.dart';
 
 class ToolEditPage extends StatefulWidget {
   final User user;

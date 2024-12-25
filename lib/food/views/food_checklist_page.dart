@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picnic/food/models/food.dart';
 import 'package:picnic/food/views/food_edit_page.dart';
-import 'package:picnic/guest/models/guest.dart';
+import 'package:picnic/user/models/user.dart';
 
 class FoodChecklistPage extends StatelessWidget {
   final User user = User(id: '', name: 'Alice', email: '');

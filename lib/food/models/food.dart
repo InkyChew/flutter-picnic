@@ -1,4 +1,4 @@
-import 'package:picnic/guest/models/guest.dart';
+import 'package:picnic/user/models/user.dart';
 
 class FoodItem {
   String name;

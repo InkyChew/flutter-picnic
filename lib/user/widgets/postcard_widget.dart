@@ -17,7 +17,7 @@ class _PostcardWidgetState extends State<PostcardWidget> {
         axis: FlipAxis.vertical,
         controller: GestureFlipCardController(),
         enableController: false,
-        frontWidget: Container(
+        frontWidget: SizedBox(
           width: 400,
           height: 300,
           child: Card(
@@ -31,7 +31,7 @@ class _PostcardWidgetState extends State<PostcardWidget> {
                 fit: BoxFit.cover,
               )),
         ),
-        backWidget: Container(
+        backWidget: SizedBox(
           width: 400,
           height: 300,
           child: Card(
