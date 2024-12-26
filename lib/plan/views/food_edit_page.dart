@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:picnic/plan/cubit/food_cubit.dart';
 import 'package:picnic/plan/models/food.dart';
 import 'package:picnic/user/models/user.dart';
 
@@ -44,6 +46,7 @@ class _PersonalFoodChecklistPageState extends State<FoodEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    // final foodCubit = context.read<FoodCubit>().updateFood(food);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -85,8 +88,7 @@ class _PersonalFoodChecklistPageState extends State<FoodEditPage> {
                       contentPadding: EdgeInsets.symmetric(horizontal: 8),
                     ),
                     onChanged: (value) {
-                      final newQuantity = int.tryParse(value) ?? 0;
-                      _updateFoodItem(newQuantity, food.isPrepared);
+                      food.quantity = int.tryParse(value) ?? 0;
                     },
                   ),
                   const SizedBox(height: 20),
@@ -103,7 +105,9 @@ class _PersonalFoodChecklistPageState extends State<FoodEditPage> {
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 14, horizontal: 8),
                     ),
-                    onChanged: (value) {},
+                    onChanged: (value) {setState(() {
+                      food.description = value;
+                    });},
                   ),
                   const SizedBox(height: 20),
 
@@ -128,7 +132,9 @@ class _PersonalFoodChecklistPageState extends State<FoodEditPage> {
                       Checkbox(
                         value: food.isPrepared,
                         onChanged: (value) {
-                          _updateFoodItem(food.quantity, value ?? false);
+                          setState(() {
+                            food.isPrepared = !food.isPrepared;
+                          });
                         },
                       ),
                       const Text('Prepared'),
