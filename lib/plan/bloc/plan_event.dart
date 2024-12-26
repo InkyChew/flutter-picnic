@@ -15,3 +15,12 @@ class LoadPlan extends PlanEvent {
   @override
   List<Object> get props => [id];
 }
+
+class UpdatePlan extends PlanEvent {
+  final Plan plan;
+
+  const UpdatePlan({required this.plan});
+
+  @override
+  List<Object> get props => [plan];
+}

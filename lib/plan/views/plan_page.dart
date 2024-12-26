@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:picnic/plan/bloc/plan_bloc.dart';
 import 'package:picnic/plan/models/models.dart';
+import 'package:picnic/plan/views/date_range_card.dart';
 import 'package:picnic/plan/views/food_checklist_page.dart';
 import 'package:picnic/plan/views/guest_page.dart';
 import 'package:picnic/place/views/place_search.dart';
+import 'package:picnic/plan/views/title_card.dart';
 import 'package:picnic/plan/views/tool_checklist_page.dart';
 
 class PlanPage extends StatefulWidget {
@@ -16,27 +17,6 @@ class PlanPage extends StatefulWidget {
 }
 
 class _PlanPageState extends State<PlanPage> {
-
-  void _pickDateTime(
-      BuildContext context, Function(DateTime) onDateSelected) async {
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null && context.mounted) {
-      final time = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-      if (time != null) {
-        onDateSelected(DateTime(pickedDate.year, pickedDate.month,
-            pickedDate.day, time.hour, time.minute));
-      }
-    }
-  }
-
   void _navigateToSearchPlace() {
     Navigator.push(
         context,
@@ -85,6 +65,7 @@ class _PlanPageState extends State<PlanPage> {
           return const Text('LOADING');
         }
         if (state is PlanLoaded) {
+          final plan = state.plan;
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.transparent,
@@ -93,65 +74,29 @@ class _PlanPageState extends State<PlanPage> {
                 "Let's plan a picnic!",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
+              actions: [
+                IconButton(
+                    onPressed: () => print(plan.toString()),
+                    icon: const Icon(Icons.abc))
+              ],
             ),
             body: ListView(padding: const EdgeInsets.all(16.0), children: [
               // Title
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-                child: ListTile(
-                  leading: const Icon(Icons.flag, color: Colors.orange),
-                  title: TextFormField(
-                    initialValue: state.plan.title,
-                    decoration: const InputDecoration(
-                      hintText: 'Title',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 8),
-                    ),
-                    onChanged: (value) {},
-                  ),
-                ),
+              TitleCard(
+                title: plan.title,
+                titleChanged: (value) => context
+                    .read<PlanBloc>()
+                    .add(UpdatePlan(plan: plan.copyWith(title: value))),
               ),
               const SizedBox(height: 16),
 
               // Start and End Datetime
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: const Icon(
-                        Icons.calendar_today,
-                        color: Colors.orange,
-                      ),
-                      title: Text(
-                        DateFormat('yyyy-MM-dd HH:mm').format(state.plan.startDate),
-                      ),
-                      onTap: () => _pickDateTime(
-                        context,
-                        (date) =>
-                            setState(() => state.plan.copyWith(startDate: date)),
-                      ),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      leading: const Icon(Icons.calendar_today,
-                          color: Colors.orange),
-                      title: Text(
-                        DateFormat('yyyy-MM-dd HH:mm').format(state.plan.endDate),
-                      ),
-                      onTap: () => _pickDateTime(
-                        context,
-                        (date) => setState(() => state.plan.copyWith(endDate: date)),
-                      ),
-                    ),
-                  ],
-                ),
+              DateRangeCard(
+                range: DateTimeRange(start: plan.startDate, end: plan.endDate),
+                onChange: (DateTime start, DateTime end) => context
+                    .read<PlanBloc>()
+                    .add(UpdatePlan(
+                        plan: plan.copyWith(startDate: start, endDate: end))),
               ),
               const SizedBox(height: 16),
 
@@ -185,7 +130,7 @@ class _PlanPageState extends State<PlanPage> {
                   subtitle: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: state.plan.members
+                      children: plan.members
                           .map((member) => Padding(
                                 padding: const EdgeInsets.only(
                                     top: 10.0, right: 8.0),
@@ -211,7 +156,7 @@ class _PlanPageState extends State<PlanPage> {
                     ),
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () => _navigateToGuestScreen(state.plan),
+                  onTap: () => _navigateToGuestScreen(plan),
                 ),
               ),
               const SizedBox(height: 16),
@@ -229,20 +174,20 @@ class _PlanPageState extends State<PlanPage> {
                     alignment: Alignment.center,
                     children: [
                       LinearProgressIndicator(
-                        value: state.plan.foodPreparedProgress,
+                        value: plan.foodPreparedProgress,
                         minHeight: 16,
                         borderRadius: BorderRadius.circular(12),
                         backgroundColor: Colors.orange.shade100,
                         color: Colors.orange,
                       ),
                       Text(
-                        '${state.plan.foodPreparedCount} / ${state.plan.foodTotalCount}',
+                        '${plan.foodPreparedCount} / ${plan.foodTotalCount}',
                         // style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () => _navigateToFoodChecklist(state.plan),
+                  onTap: () => _navigateToFoodChecklist(plan),
                 ),
               ),
               const SizedBox(height: 16),
@@ -261,20 +206,20 @@ class _PlanPageState extends State<PlanPage> {
                     alignment: Alignment.center,
                     children: [
                       LinearProgressIndicator(
-                        value: state.plan.toolPreparedProgresst,
+                        value: plan.toolPreparedProgresst,
                         minHeight: 16,
                         borderRadius: BorderRadius.circular(12),
                         backgroundColor: Colors.orange.shade100,
                         color: Colors.orange,
                       ),
                       Text(
-                        '${state.plan.toolPreparedCount} / ${state.plan.toolTotalCount}',
+                        '${plan.toolPreparedCount} / ${plan.toolTotalCount}',
                         // style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () => _navigateToToolChecklist(state.plan),
+                  onTap: () => _navigateToToolChecklist(plan),
                 ),
               ),
               const SizedBox(height: 16),

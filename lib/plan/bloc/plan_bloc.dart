@@ -9,9 +9,10 @@ part 'plan_state.dart';
 class PlanBloc extends Bloc<PlanEvent, PlanState> {
   PlanBloc() : super(PlanInitial()) {
     on<LoadPlan>(getPlan);
+    on<UpdatePlan>(updatePlan);
   }
 
-  getPlan(event, emit) {
+  void getPlan(event, emit) {
     emit(PlanLoading());
 
     try {
@@ -57,7 +58,11 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
       emit(PlanLoaded(plan: plan));
     } catch (e) {
-      emit(FoodError('Failed to load plan: $e'));
+      emit(PlanError('Failed to load plan: $e'));
     }
+  }
+
+  void updatePlan(event, emit) {
+    emit(PlanLoaded(plan: event.plan));
   }
 }

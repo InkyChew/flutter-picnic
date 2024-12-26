@@ -20,10 +20,10 @@ final class PlanLoaded extends PlanState {
   List<Object> get props => [plan];
 }
 
-class FoodError extends PlanState {
+final class PlanError extends PlanState {
   final String message;
 
-  const FoodError(this.message);
+  const PlanError(this.message);
 
   @override
   List<Object> get props => [message];
