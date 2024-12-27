@@ -2,21 +2,22 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picnic/plan/models/models.dart';
 
-part 'food_state.dart';
+part 'food_list_state.dart';
 
-class FoodCubit extends Cubit<FoodState> {
-  FoodCubit(List<Food> foods) : super(FoodState(foods));
+class FoodListCubit extends Cubit<FoodListState> {
+
+  FoodListCubit(List<Food> foods) : super(FoodListState(foods));
 
   void updateFoodIsPrepared(Food food) {
     List<Food> updatedFoods = List.from(state.foods);
     int i = updatedFoods.indexOf(food); // index where id
     if (i != -1) {
       updatedFoods[i] = food.copyWith(isPrepared: !food.isPrepared);
-      emit(FoodState(updatedFoods));
+      emit(FoodListState(updatedFoods));
     }
   }
 
-  void updateFood(Food food) {
+  void updateFoodList(Food food) {
     List<Food> updatedFoods = List.from(state.foods);
     int i = updatedFoods.indexOf(food); // index where id
     if (i != -1) {
@@ -24,20 +25,20 @@ class FoodCubit extends Cubit<FoodState> {
           name: food.name,
           quantity: food.quantity,
           description: food.description,
-          isPrepared: !food.isPrepared);
-      emit(FoodState(updatedFoods));
+          isPrepared: food.isPrepared);
+      emit(FoodListState(updatedFoods));
     }
   }
 
   void addFood(Food food) {
     List<Food> updatedFoods = List.from(state.foods);
     updatedFoods.add(food);
-    emit(FoodState(updatedFoods));
+    emit(FoodListState(updatedFoods));
   }
 
   void removeFood(Food food) {
     List<Food> updatedFoods = List.from(state.foods);
     updatedFoods.remove(food);
-    emit(FoodState(updatedFoods));
+    emit(FoodListState(updatedFoods));
   }
 }

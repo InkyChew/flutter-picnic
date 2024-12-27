@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:picnic/plan/cubit/food_cubit.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:picnic/plan/cubit/food_list_cubit.dart';
 
 import 'package:picnic/plan/models/food.dart';
 import 'package:picnic/plan/views/food_edit_page.dart';
@@ -15,11 +16,11 @@ class FoodChecklistPage extends StatelessWidget {
     required this.foods,
   });
 
-  void _navigateToFoodEditPage(BuildContext context, Food? food) {
+  void _navigateToFoodEditPage(BuildContext context, Food food) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FoodEditPage(user: user, foodItem: food),
+        builder: (context) => FoodEditPage(food: food),
       ),
     );
   }
@@ -27,7 +28,7 @@ class FoodChecklistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => FoodCubit(foods),
+      create: (context) => FoodListCubit(foods),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -40,54 +41,70 @@ class FoodChecklistPage extends StatelessWidget {
             color: Colors.grey[800],
           ),
         ),
-        body: BlocBuilder<FoodCubit, FoodState>(
+        body: BlocBuilder<FoodListCubit, FoodListState>(
           builder: (context, state) {
             final foods = state.foods;
             return ListView.builder(
               itemCount: foods.length,
               itemBuilder: (context, index) {
                 final food = foods[index];
-                return Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  elevation: 2,
-                  margin: const EdgeInsets.all(8),
-                  child: ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text(food.name)],
+                return Slidable(
+                  endActionPane:
+                      ActionPane(motion: const ScrollMotion(), children: [
+                    SlidableAction(
+                      onPressed: (context) =>
+                          context.read<FoodListCubit>().removeFood(food),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Quantity: ${food.quantity}',
-                          style: const TextStyle(
-                            fontSize: 14,
+                  ]),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    elevation: 2,
+                    margin: const EdgeInsets.all(8),
+                    child: ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [Text(food.name)],
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Quantity: ${food.quantity}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
                           ),
+                        ],
+                      ),
+                      leading: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.orange.shade100,
+                        child: Text(
+                          food.preparedBy.name,
+                          style: const TextStyle(fontSize: 18),
                         ),
-                      ],
-                    ),
-                    leading: CircleAvatar(
-                      radius: 28,
-                      backgroundColor: Colors.orange.shade100,
-                      child: Text(
-                        food.preparedBy.name,
-                        style: const TextStyle(fontSize: 18),
                       ),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(
-                        food.isPrepared
-                            ? Icons.check_circle
-                            : Icons.radio_button_unchecked,
-                        color: food.isPrepared
-                            ? Colors.orange
-                            : Colors.orange.shade300,
+                      trailing: IconButton(
+                        icon: Icon(
+                          food.isPrepared
+                              ? Icons.check_circle
+                              : Icons.radio_button_unchecked,
+                          color: food.isPrepared
+                              ? Colors.orange
+                              : Colors.orange.shade300,
+                        ),
+                        onPressed: () => context
+                            .read<FoodListCubit>()
+                            .updateFoodIsPrepared(food),
                       ),
-                      onPressed: () => context.read<FoodCubit>().updateFoodIsPrepared(food),
+                      onTap: () => _navigateToFoodEditPage(context, food),
                     ),
-                    onTap: () => _navigateToFoodEditPage(context, food),
                   ),
                 );
               },
@@ -96,7 +113,7 @@ class FoodChecklistPage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
-            onPressed: () => _navigateToFoodEditPage(context, null)),
+            onPressed: () => _navigateToFoodEditPage(context, Food(preparedBy: user, planId: 1))),
       ),
     );
   }

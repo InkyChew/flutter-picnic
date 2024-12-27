@@ -9,6 +9,7 @@ class Tool {
   int quantity;
   String description;
   bool isPrepared;
+  int planId;
 
   Tool({
     this.id = 0,
@@ -17,6 +18,7 @@ class Tool {
     this.quantity = 1,
     this.description = '',
     this.isPrepared = false,
+    required this.planId,
   });
 
   Tool copyWith({
@@ -26,6 +28,7 @@ class Tool {
     int? quantity,
     String? description,
     bool? isPrepared,
+    int? planId,
   }) {
     return Tool(
       id: id ?? this.id,
@@ -34,6 +37,7 @@ class Tool {
       quantity: quantity ?? this.quantity,
       description: description ?? this.description,
       isPrepared: isPrepared ?? this.isPrepared,
+      planId: planId ?? this.planId,
     );
   }
 
@@ -45,6 +49,7 @@ class Tool {
       'quantity': quantity,
       'description': description,
       'isPrepared': isPrepared,
+      'planId': planId,
     };
   }
 
@@ -56,6 +61,7 @@ class Tool {
       quantity: map['quantity']?.toInt() ?? 0,
       description: map['description'] ?? '',
       isPrepared: map['isPrepared'] ?? false,
+      planId: map['planId']?.toInt() ?? 0,
     );
   }
 
@@ -65,29 +71,31 @@ class Tool {
 
   @override
   String toString() {
-    return 'Tool(id: $id, name: $name, preparedBy: $preparedBy, quantity: $quantity, description: $description, isPrepared: $isPrepared)';
+    return 'Tool(id: $id, name: $name, preparedBy: $preparedBy, quantity: $quantity, description: $description, isPrepared: $isPrepared, planId: $planId)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
+  
     return other is Tool &&
-        other.id == id &&
-        other.name == name &&
-        other.preparedBy == preparedBy &&
-        other.quantity == quantity &&
-        other.description == description &&
-        other.isPrepared == isPrepared;
+      other.id == id &&
+      other.name == name &&
+      other.preparedBy == preparedBy &&
+      other.quantity == quantity &&
+      other.description == description &&
+      other.isPrepared == isPrepared &&
+      other.planId == planId;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-        name.hashCode ^
-        preparedBy.hashCode ^
-        quantity.hashCode ^
-        description.hashCode ^
-        isPrepared.hashCode;
+      name.hashCode ^
+      preparedBy.hashCode ^
+      quantity.hashCode ^
+      description.hashCode ^
+      isPrepared.hashCode ^
+      planId.hashCode;
   }
 }

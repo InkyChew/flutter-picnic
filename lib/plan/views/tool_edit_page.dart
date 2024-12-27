@@ -32,7 +32,8 @@ class _PersonaltoolChecklistPageState extends State<ToolEditPage> {
   @override
   void initState() {
     super.initState();
-    tool = widget.toolItem ?? Tool(preparedBy: widget.user, name: '');
+    tool =
+        widget.toolItem ?? Tool(planId: 1, preparedBy: widget.user, name: '');
   }
 
   void _updatetoolItem(int quantity, bool isPrepared) {
