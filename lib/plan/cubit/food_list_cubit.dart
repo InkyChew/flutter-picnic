@@ -30,13 +30,17 @@ class FoodListCubit extends Cubit<FoodListState> {
     }
   }
 
-  void addFood(Food food) {
+  Future<void> addFood(Food food) async {
+    // api
+    await Future.delayed(const Duration(seconds: 3));
     List<Food> updatedFoods = List.from(state.foods);
     updatedFoods.add(food);
     emit(FoodListState(updatedFoods));
   }
 
-  void removeFood(Food food) {
+  Future<void> deleteFood(Food food) async {
+    // api
+    await Future.delayed(const Duration(seconds: 3));
     List<Food> updatedFoods = List.from(state.foods);
     updatedFoods.remove(food);
     emit(FoodListState(updatedFoods));

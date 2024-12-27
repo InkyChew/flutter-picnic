@@ -33,7 +33,7 @@ class FoodEditPage extends StatelessWidget {
           actions: [
             IconButton(
                 tooltip: 'delete',
-                onPressed: () => context.read<FoodListCubit>().removeFood(food),
+                onPressed: () => context.read<FoodListCubit>().deleteFood(food),
                 icon: const Icon(Icons.delete)),
           ],
         ),

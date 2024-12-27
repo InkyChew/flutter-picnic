@@ -53,7 +53,7 @@ class FoodChecklistPage extends StatelessWidget {
                       ActionPane(motion: const ScrollMotion(), children: [
                     SlidableAction(
                       onPressed: (context) =>
-                          context.read<FoodListCubit>().removeFood(food),
+                          context.read<FoodListCubit>().deleteFood(food),
                       foregroundColor: Colors.white,
                       backgroundColor: Theme.of(context).colorScheme.error,
                       icon: Icons.delete,
