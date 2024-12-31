@@ -20,7 +20,10 @@ class FoodChecklistPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FoodEditPage(food: food),
+        builder: (cxt) => FoodEditPage(
+          food: food,
+          listCubit: context.read<FoodListCubit>(),
+        ),
       ),
     );
   }
@@ -29,22 +32,22 @@ class FoodChecklistPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => FoodListCubit(foods),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: const Text(
-            "Food",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          iconTheme: IconThemeData(
-            color: Colors.grey[800],
-          ),
-        ),
-        body: BlocBuilder<FoodListCubit, FoodListState>(
-          builder: (context, state) {
-            final foods = state.foods;
-            return ListView.builder(
+      child: BlocBuilder<FoodListCubit, FoodListState>(
+        builder: (context, state) {
+          final foods = state.foods;
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text(
+                "Food",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              iconTheme: IconThemeData(
+                color: Colors.grey[800],
+              ),
+            ),
+            body: ListView.builder(
               itemCount: foods.length,
               itemBuilder: (context, index) {
                 final food = foods[index];
@@ -108,12 +111,13 @@ class FoodChecklistPage extends StatelessWidget {
                   ),
                 );
               },
-            );
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () => _navigateToFoodEditPage(context, Food(preparedBy: user, planId: 1))),
+            ),
+            floatingActionButton: FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => _navigateToFoodEditPage(
+                    context, Food(preparedBy: user, planId: 1))),
+          );
+        },
       ),
     );
   }

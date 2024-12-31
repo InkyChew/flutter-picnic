@@ -16,12 +16,10 @@ class FoodEditCubit extends Cubit<FoodEditState> {
       // User(name: 'Bob', email: ''),
       // User(name: 'Inky', email: '')
     ];
-    if (members.isEmpty) msg = 'No participated members.';
+    if (members.isEmpty) {
+      msg = 'No participated members.';
+    }
     emit(state.copyWith(members: members, message: msg));
-  }
-
-  void emitMsg() {
-    
   }
 
   void editFood(Food food) {
@@ -30,6 +28,18 @@ class FoodEditCubit extends Cubit<FoodEditState> {
 
   Future<void> updateFood() async {
     // api
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
+    if (state.status == Status.adding) {
+      emit(state.copyWith(status: Status.added));
+    }
+    if (state.status == Status.editing) {
+      emit(state.copyWith(status: Status.edited));
+    }
+  }
+
+  Future<void> deleteFood() async {
+    // api
+    await Future.delayed(const Duration(seconds: 1));
+    emit(state.copyWith(status: Status.deleted));
   }
 }

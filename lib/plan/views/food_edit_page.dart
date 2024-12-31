@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:picnic/plan/cubit/food_edit_cubit.dart';
 import 'package:picnic/plan/cubit/food_list_cubit.dart';
 import 'package:picnic/user/models/user.dart';
-
 import '../models/models.dart';
 
 class FoodEditPage extends StatelessWidget {
   final Food food;
-  const FoodEditPage({super.key, required this.food});
+  final FoodListCubit listCubit;
+  const FoodEditPage({super.key, required this.food, required this.listCubit});
 
   static List<DropdownMenuEntry<User>> generateGuestEntry(List<User> members) {
     return members.map<DropdownMenuEntry<User>>((User guest) {
@@ -23,32 +23,50 @@ class FoodEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => FoodEditCubit(food)..getMembers(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          iconTheme: IconThemeData(
-            color: Colors.grey[800],
-          ),
-          actions: [
-            IconButton(
-                tooltip: 'delete',
-                onPressed: () => context.read<FoodListCubit>().deleteFood(food),
-                icon: const Icon(Icons.delete)),
-          ],
-        ),
-        body: BlocConsumer<FoodEditCubit, FoodEditState>(
-          listenWhen: (previous, current) =>
-              previous.message != current.message,
-          listener: (context, state) {
-            if (state.message != null) {
+      child: BlocConsumer<FoodEditCubit, FoodEditState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: (context, state) {
+          final food = state.food;
+          switch (state.status) {
+            case Status.added:
+              listCubit.addFood(food);
+              Navigator.pop(context);
+              break;
+            case Status.edited:
+              listCubit.updateFoodList(food);
+              Navigator.pop(context);
+              break;
+            case Status.deleted:
+              listCubit.deleteFood(food);
+              Navigator.pop(context);
+              break;
+            case Status.error:
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${state.message}')),
+                SnackBar(
+                    content: Text(state.message ?? 'Unknown error occurs')),
               );
-            }
-          },
-          builder: (context, state) {
-            return ListView(
+            case Status.adding:
+            case Status.editing:
+          }
+        },
+        builder: (context, state) {
+          final food = state.food;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(state.title),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              iconTheme: IconThemeData(
+                color: Colors.grey[800],
+              ),
+              actions: [
+                IconButton(
+                    tooltip: 'delete',
+                    onPressed: () => context.read<FoodEditCubit>().deleteFood(),
+                    icon: const Icon(Icons.delete)),
+              ],
+            ),
+            body: ListView(
               padding: const EdgeInsets.all(12.0),
               children: [
                 TextFormField(
@@ -121,25 +139,24 @@ class FoodEditPage extends StatelessWidget {
                     const SizedBox(width: 10),
                     Checkbox(
                       value: food.isPrepared,
-                      onChanged: (value) => context
-                          .read<FoodEditCubit>()
-                          .editFood(food.copyWith(isPrepared: value)),
+                      onChanged: (value) => {
+                        context
+                            .read<FoodEditCubit>()
+                            .editFood(food.copyWith(isPrepared: value)),
+                      },
                     ),
                     const Text('Prepared'),
                   ],
                 ),
               ],
-            );
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          tooltip: 'Save',
-          child: const Icon(Icons.save),
-          onPressed: () {
-            // context.read<FoodEditCubit>().updateFood();
-            context.read<FoodListCubit>().updateFoodList(food);
-          },
-        ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              tooltip: 'Save',
+              onPressed: () => context.read<FoodEditCubit>().updateFood(),
+              child: const Icon(Icons.save),
+            ),
+          );
+        },
       ),
     );
   }

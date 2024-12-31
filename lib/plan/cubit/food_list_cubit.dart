@@ -19,7 +19,7 @@ class FoodListCubit extends Cubit<FoodListState> {
 
   void updateFoodList(Food food) {
     List<Food> updatedFoods = List.from(state.foods);
-    int i = updatedFoods.indexOf(food); // index where id
+    int i = updatedFoods.indexWhere((f) => f.id == food.id);
     if (i != -1) {
       updatedFoods[i] = food.copyWith(
           name: food.name,

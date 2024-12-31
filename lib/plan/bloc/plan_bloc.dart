@@ -22,6 +22,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         Member(user: User(name: 'Alice', email: '')),
       ], foods: [
         Food(
+            id: 1,
             planId: 1,
             name: 'Sandwich',
             preparedBy: User(name: 'Alice', email: ''),
@@ -29,12 +30,14 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             isPrepared: true,
             description: "bob donot eat meat oh no say cheese good taste"),
         Food(
+            id: 2,
             planId: 1,
             name: 'Juice',
             preparedBy: User(name: 'Alice', email: ''),
             quantity: 5,
             isPrepared: false),
         Food(
+            id: 3,
             planId: 1,
             name: 'Chips',
             preparedBy: User(name: 'Alice', email: ''),
@@ -42,6 +45,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             isPrepared: true),
       ], tools: [
         Tool(
+            id: 1,
             planId: 1,
             name: 'Mat',
             preparedBy: User(name: 'Alice', email: ''),
@@ -49,12 +53,14 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
             isPrepared: true,
             description: "bob donot eat meat oh no say cheese good taste"),
         Tool(
+            id: 2,
             planId: 1,
             name: 'Music',
             preparedBy: User(name: 'Alice', email: ''),
             quantity: 5,
             isPrepared: false),
         Tool(
+            id: 3,
             planId: 1,
             name: 'Lights',
             preparedBy: User(name: 'Alice', email: ''),
